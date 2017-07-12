@@ -1,7 +1,16 @@
 const keyword_extractor = require('keyword-extractor');
 const fs = require('fs');
+const assert = require('assert');
 const numeric = require('numeric');
 
+/**
+ * Sums an array.
+ * @param {Array<numeric>} arr
+ * @return {numeric}
+ */
+const sumArray = function sumArray(arr) {
+    return arr.reduce((sum, x) => sum + x);
+};
 
 /**
  * creates a row of the term document matrix. A[i] == 1 if word i is in the
@@ -11,12 +20,18 @@ const numeric = require('numeric');
  * @return {Array<numeric>}
  */
 const createTermDocumentRow = function createRow(document, allWords) {
+    assert.notStrictEqual(document, []);
     // We create a binary array A where A[i] == 1 if word is in the document.
     const currRow = allWords.map(
         word => (document.includes(word) ? 1 : 0),
     );
+    if (sumArray(currRow) === 0) {
+        console.log(document);
+    }
+    assert.notEqual(sumArray(currRow), 0);
     return currRow;
 };
+
 
 /**
  * Creates the term document matrix for the set of documents. A[i][j] = 1 if
@@ -35,16 +50,7 @@ const createTermDocumentMatrix = function createMatrix(documents) {
         document => createTermDocumentRow(document, allWords),
     );
 
-    /** to calculate SVD using numeric.js, we need to have the number of rows
-     *  be greater than the number of columns. If that's not true, we pad
-     *  the term document matrix with zeros.
-     */
-    if (matrix.length <= allWords.length) {
-        const zeroArray = Array.from(Array(allWords.length), () => 0);
-        while (matrix.length <= allWords.length) {
-            matrix.push(zeroArray);
-        }
-    }
+    assert.notStrictEqual(sumArray(matrix), 0);
     return {
         matrix,
         allWords,
@@ -62,10 +68,11 @@ const getNBiggestIndices = function argMaxN(arr, N) {
     let sorted = arr.concat().sort(
         (a, b) => b - a,
     );
-
     // we only care about the unique elements
     sorted = Array.from(new Set(sorted));
     const biggest = sorted.slice(0, N);
+
+    assert.strictEqual(biggest.length, N);
     const indices = biggest.map(
         numb => arr.indexOf(numb),
     );
@@ -87,25 +94,29 @@ const getTopKeywords = function getKeywords(documents, N) {
     };
 
     // We extract the keywords from each of the documents
-    const keywords = documents.map(
+    let keywords = documents.map(
         document => keyword_extractor.extract(document, keywordExtractionConfig),
     );
-
+    keywords = keywords.filter(arr => arr.length > 0);
     // we need to calculate the term-document matrix to extract the keywords.
     const result = createTermDocumentMatrix(keywords);
-    const td_matrix = result.matrix;
+    let td_matrix = result.matrix;
     const allKeywords = result.allWords;
-
-    // once we have the matrix, we can use the SVD function to calculate
-    // the principal components, and use that to find the top keywords
+    /** once we have the matrix, we can use the SVD function to calculate
+     * the principal components, and use that to find the top keywords.
+     * Note that to run SVD, we need to have the number of rows
+     * be greater than the number of columns. If that's not true, we calculate
+     * the SVD of the transpose, following Adachi (2016).
+     */
+    if (td_matrix.length <= allKeywords.length) {
+        td_matrix = numeric.transpose(td_matrix);
+    }
     const res = numeric.svd(td_matrix);
-
-    // principal components = US
-    const principal_components = numeric.dot(res.U, res.S);
+    const principalComponents = numeric.dot(res.U, res.S);
 
     // We get the indices for the N biggest unique components
-    const keyword_indices = getNBiggestIndices(principal_components, N);
-    const topKeywords = keyword_indices.map(
+    const keywordIndices = getNBiggestIndices(principalComponents, N);
+    const topKeywords = keywordIndices.map(
         index => allKeywords[index],
     );
     return topKeywords;
@@ -141,13 +152,17 @@ module.exports = function exports(strings, N = 5) {
  * @return {Array<string>}}
  */
 const processDocument = function process(err, document) {
+    const N = 5;
     if (err) {
         throw err;
     }
     let strings = cleanDocument(document).split('.');
-    strings = strings.filter(string => string !== ' ');
-    const result = getTopKeywords(strings, 10);
-    console.log(result);
+    strings = strings.filter(string => (string !== ' ') && (string !== ''));
+    const result = getTopKeywords(strings, N);
+    assert.strictEqual(result.length, N);
+    result.map(
+        string => console.log(string),
+    );
     return result;
 };
 

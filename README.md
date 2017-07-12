@@ -14,3 +14,8 @@ you run the following command:
 
 There's an example document taken from the New York Times in `article.txt`. You
 can run the script on it with `node index.js article.txt`.
+
+# References
+
+[1] Adachi, Kohei. Matrix-Based Introduction to Multivariate Data Analysis.
+Springer Singapore, 2016.
