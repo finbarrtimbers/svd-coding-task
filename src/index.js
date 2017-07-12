@@ -2,6 +2,7 @@ const keyword_extractor = require('keyword-extractor');
 const fs = require('fs');
 const assert = require('assert');
 const numeric = require('numeric');
+const process = require('process');
 
 /**
  * Sums an array.
@@ -166,4 +167,4 @@ const processDocument = function process(err, document) {
     return result;
 };
 
-fs.readFile('article.txt', 'utf8', processDocument);
+fs.readFile(process.argv[2], 'utf8', processDocument);
