@@ -27,6 +27,11 @@
   },
   "dependencies": {
     "keyword-extractor": "0.0.14",
-    "node-svd": "^0.1.3"
+    "math": "0.0.3",
+    "matrix": "^1.0.3",
+    "node-matrix": "^0.1.1",
+    "node-svd": "^0.1.3",
+    "numeric": "^1.2.6",
+    "vectorious": "^4.8.1"
   }
 }
