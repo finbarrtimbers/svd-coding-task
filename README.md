@@ -5,6 +5,10 @@ term-document matrix A, A[i][j] = 1 if term i is present in document j, and 0
 if not). Then, uses numeric.js to calculate the principal component scores
 using SVD, and uses the scores to find the top N keywords.
 
+# Setup
+
+Install all packages with `npm install`.
+
 # Usage
 
 The script will print out the top N keywords from `filename.txt` to `stdin` if
