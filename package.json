@@ -1,0 +1,32 @@
+{
+  "name": "coding-task",
+  "version": "1.0.0",
+  "description": "Uses the keyword-extractor and node-svd packages to extract the top N keywords using PCA.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/finbarrtimbers/svd-coding-task.git"
+  },
+  "keywords": [
+    "svd",
+    "pca",
+    "keyword"
+  ],
+  "author": "Finbarr Timbers <finbarrtimbers@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finbarrtimbers/svd-coding-task/issues"
+  },
+  "homepage": "https://github.com/finbarrtimbers/svd-coding-task#readme",
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2"
+  },
+  "dependencies": {
+    "keyword-extractor": "0.0.14",
+    "node-svd": "^0.1.3"
+  }
+}
