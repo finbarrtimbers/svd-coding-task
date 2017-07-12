@@ -26,9 +26,6 @@ const createTermDocumentRow = function createRow(document, allWords) {
     const currRow = allWords.map(
         word => (document.includes(word) ? 1 : 0),
     );
-    if (sumArray(currRow) === 0) {
-        console.log(document);
-    }
     assert.notEqual(sumArray(currRow), 0);
     return currRow;
 };
@@ -152,7 +149,7 @@ module.exports = function exports(strings, N = 5) {
  * @param {string} document
  * @return {Array<string>}}
  */
-const processDocument = function process(err, document) {
+const processDocument = function processDoc(err, document) {
     const N = 5;
     if (err) {
         throw err;
