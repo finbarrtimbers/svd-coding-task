@@ -3,7 +3,8 @@
 var expect = require('chai').expect;
 var topNKeywords = require('../index');
 var fs = require('fs');
-var
+
+// add check that sum === len(keywords)
 
 describe('#getTopNKeywords', function() {
     it('should return N words', function() {
