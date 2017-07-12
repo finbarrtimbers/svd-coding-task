@@ -1,0 +1,8 @@
+{
+  parser: 'babel-eslint',
+  "rules": {
+      "indent": ["error", 4],
+      "camelcase": 0
+  },
+  "extends": ["airbnb-base"]
+}
